@@ -1,5 +1,7 @@
 # Maze Generator and Solver
 
+Part of [Vanderbei's Java Simulations](https://github.com/pubino/vanderbei-apps) collection.
+
 An interactive Java application for generating and solving mazes using recursive backtracking algorithms. Originally developed by Robert Vanderbei, Princeton University (1997).
 
 ## Overview
