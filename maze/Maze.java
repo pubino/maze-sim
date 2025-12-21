@@ -1,17 +1,15 @@
 package maze;
 
 import java.awt.*;
-import java.applet.*;
 import java.awt.image.*;
 import java.util.*;
 import java.io.*;
-import java.net.*;
 import java.text.*;
 
 import myutil.*;
 import myutil.Format;
 
-public class Maze extends Applet
+public class Maze extends Panel implements SimApp
 {
 	TextField N;
 
@@ -40,6 +38,10 @@ public class Maze extends Applet
 	    mc.resize(300,300);
 	    validate();
 	    show();
+	}
+
+	public void start() {
+		// No-op for this simulation
 	}
 
         public boolean action(Event evt, Object arg)
