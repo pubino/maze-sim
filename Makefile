@@ -1,0 +1,143 @@
+# Maze Simulator Makefile
+#
+# Targets:
+#   make          - Build JAR file (default)
+#   make jar      - Build JAR file
+#   make app      - Build macOS .app bundle (unsigned)
+#   make sign     - Sign and notarize for distribution
+#   make run      - Build and run the JAR
+#   make run-app  - Build and run the .app bundle
+#   make clean    - Remove build artifacts
+#   make distclean - Remove all generated files including dist
+#
+# Requirements:
+#   - Java 14+ (for jpackage)
+#   - For signing: Apple Developer certificate and notarization credentials
+
+SHELL := /bin/bash
+
+# Directories
+PROJECT_DIR := $(shell pwd)
+BUILD_DIR := $(PROJECT_DIR)/build
+DIST_DIR := $(PROJECT_DIR)/dist
+SCRIPTS_DIR := $(PROJECT_DIR)/scripts
+
+# Java settings
+JAVAC := javac
+JAVA := java
+JAR := jar
+JPACKAGE := jpackage
+JAVAC_FLAGS := -Xlint:-deprecation -Xlint:-removal
+
+# Output files
+JAR_FILE := $(DIST_DIR)/MazeSim.jar
+APP_BUNDLE := $(DIST_DIR)/Maze.app
+MAIN_CLASS := maze.Maze
+
+# Source files
+SOURCES := \
+	maze/Maze.java \
+	myutil/AppletFrame.java \
+	myutil/GL.java \
+	myutil/SL.java \
+	myutil/GridPanel.java \
+	myutil/Format.java
+
+# App bundle settings
+APP_NAME := Maze
+DISPLAY_NAME := Maze Generator and Solver
+BUNDLE_ID := edu.princeton.vanderbei.maze-sim
+VERSION := 1.0.0
+
+# Default target
+.PHONY: all
+all: jar
+
+# Compile Java sources and create JAR
+.PHONY: jar
+jar: $(JAR_FILE)
+
+$(JAR_FILE): $(SOURCES)
+	@echo "=== Compiling Java sources ==="
+	@mkdir -p $(BUILD_DIR) $(DIST_DIR)
+	$(JAVAC) -d $(BUILD_DIR) -sourcepath . $(JAVAC_FLAGS) $(SOURCES)
+	@echo "=== Creating JAR file ==="
+	cd $(BUILD_DIR) && $(JAR) cfe $(JAR_FILE) $(MAIN_CLASS) maze/ myutil/
+	@echo "Build complete: $(JAR_FILE)"
+
+# Build macOS .app bundle (unsigned)
+.PHONY: app
+app: $(APP_BUNDLE)
+
+$(APP_BUNDLE): $(JAR_FILE)
+	@echo "=== Creating macOS App Bundle ==="
+	@rm -rf $(APP_BUNDLE)
+	$(JPACKAGE) \
+		--type app-image \
+		--name "$(APP_NAME)" \
+		--input $(DIST_DIR) \
+		--main-jar MazeSim.jar \
+		--main-class $(MAIN_CLASS) \
+		--dest $(DIST_DIR) \
+		--app-version $(VERSION) \
+		--vendor "Vanderbei" \
+		--mac-package-identifier $(BUNDLE_ID) \
+		--mac-package-name "$(DISPLAY_NAME)" \
+		--java-options "-Xmx512m"
+	@echo "App bundle created: $(APP_BUNDLE)"
+
+# Sign and notarize for distribution
+.PHONY: sign
+sign: app
+	@echo "=== Signing and Notarizing ==="
+	@if [ -x "$(SCRIPTS_DIR)/sign-and-notarize.sh" ]; then \
+		$(SCRIPTS_DIR)/sign-and-notarize.sh; \
+	else \
+		echo "Error: sign-and-notarize.sh not found or not executable"; \
+		exit 1; \
+	fi
+
+# Run the JAR
+.PHONY: run
+run: jar
+	@echo "=== Running Maze Simulator ==="
+	$(JAVA) -jar $(JAR_FILE)
+
+# Run the app bundle
+.PHONY: run-app
+run-app: app
+	@echo "=== Running Maze App ==="
+	open $(APP_BUNDLE)
+
+# Clean build artifacts
+.PHONY: clean
+clean:
+	@echo "=== Cleaning build artifacts ==="
+	rm -rf $(BUILD_DIR)
+	rm -f $(JAR_FILE)
+	@echo "Clean complete"
+
+# Clean everything including dist
+.PHONY: distclean
+distclean: clean
+	@echo "=== Removing all generated files ==="
+	rm -rf $(DIST_DIR)
+	@echo "Distclean complete"
+
+# Help
+.PHONY: help
+help:
+	@echo "Maze Simulator Makefile"
+	@echo ""
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  all        - Build JAR file (default)"
+	@echo "  jar        - Build JAR file"
+	@echo "  app        - Build macOS .app bundle (unsigned)"
+	@echo "  sign       - Sign and notarize for distribution"
+	@echo "  run        - Build and run the JAR"
+	@echo "  run-app    - Build and run the .app bundle"
+	@echo "  clean      - Remove build artifacts"
+	@echo "  distclean  - Remove all generated files including dist"
+	@echo "  help       - Show this help message"
