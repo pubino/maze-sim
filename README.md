@@ -104,8 +104,3 @@ This creates a "perfect" maze with exactly one path between any two cells.
 - **Green lines**: Maze walls
 - **Red line**: Current solution path
 - **Gray line**: Backtracked (dead end) paths
-
-## License
-
-Copyright 1997, Princeton University.
-Based on original work by Robert Vanderbei.
