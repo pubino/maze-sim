@@ -16,3 +16,11 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Browser build and local development
+.env*
+node_modules/
+__pycache__/
+*.db
+build/
+.venv/

@@ -1,5 +1,19 @@
 # Maze Generator and Solver
 
+[Run in your browser](https://pubino.github.io/maze-sim/).
+
+The browser port keeps the Java maze's randomized depth-first carving and
+left, right, up, down search order. Enter a seed to repeat a grid. Use
+**Solve** to play the walk, **Step** to advance one move, and **Reset solver**
+to replay the same maze. The port draws the final move into the exit and
+supports grids up to 50 by 50 cells.
+
+Preview with `docker-compose up --build preview` on http://localhost:8000.
+Run the Java comparison, Python checks, and Chromium tests with
+`docker-compose run --build --rm test`. Run the JavaScript checks with
+`docker-compose run --build --rm js-check`.
+
+
 Part of [Prof. Robert Vanderbei's Java Applications](https://pubino.github.io/vanderbei-apps#maze-sim).
 
 An interactive Java application for generating and solving mazes using recursive backtracking algorithms. Originally developed by Robert Vanderbei, Princeton University (1997).

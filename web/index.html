@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Maze Generator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow"><a href="https://pubino.github.io/vanderbei-apps/#maze-sim">Vanderbei’s applications</a> · Princeton University</p>
+      <h1>Maze Generator</h1>
+      <p class="intro">Generate a maze and follow the depth-first solver from the entrance to the exit. The blue line marks the current route and the gray line marks backtracking.</p>
+    </header>
+    <section class="panel" aria-labelledby="maze-title">
+      <h2 id="maze-title">Maze</h2>
+      <div class="workspace">
+        <div>
+          <canvas id="maze" width="800" height="800" role="img" aria-label="Maze and solver route" hidden></canvas>
+          <dl class="stats">
+            <div><dt>Seed</dt><dd id="seed-used">—</dd></div>
+            <div><dt>Moves shown</dt><dd id="moves">—</dd></div>
+            <div><dt>Route length</dt><dd id="length">—</dd></div>
+          </dl>
+        </div>
+        <div>
+          <form id="settings">
+            <fieldset id="generator" disabled>
+              <legend>Generate a maze</legend>
+              <div class="fields">
+                <label>Grid size<input id="size" type="number" min="1" max="50" value="10" required></label>
+                <label>Seed<input id="seed" type="number" min="0" max="4294967295" placeholder="Random"></label>
+              </div>
+              <button>Generate</button>
+            </fieldset>
+          </form>
+          <fieldset id="solver" disabled>
+            <legend>Follow the solver</legend>
+            <div class="actions">
+              <button id="play" type="button">Solve</button>
+              <button id="step" type="button" class="secondary">Step</button>
+              <button id="reset" type="button" class="secondary">Reset solver</button>
+            </div>
+          </fieldset>
+          <p class="hint">The entrance is on the bottom edge. The solver checks left, right, up, and down in that order.</p>
+          <p id="status" class="hint" role="status">Loading the Python engine…</p>
+          <p id="error" role="alert" hidden></p>
+          <button id="retry" type="button" class="secondary" hidden>Reload</button>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>Based on Robert Vanderbei’s original Java application. Python runs in your browser via
+        <a href="https://pyodide.org/">Pyodide</a>. <a href="https://github.com/pubino/maze-sim">Source on GitHub</a>.</p>
+    </footer>
+  </main>
+</body>
+</html>
